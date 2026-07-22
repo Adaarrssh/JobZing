@@ -7,6 +7,7 @@ import cookieParser from "cookie-parser";
 import authRoutes from "./routes/auth.routes.js";
 import errorHandler from "./middleware/error.middleware.js";
 import userRoutes from "./routes/user.routes.js";
+import notificationRoutes from "./routes/notification.routes.js";
 const app = express();
 app.use(helmet());
 app.use(cors());
@@ -17,6 +18,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use("/api/auth", authRoutes);
 app.use("/api/user", userRoutes);
+app.use("/api/notifications", notificationRoutes);
 app.get("/", (req, res) => {
   res.status(200).json({
     success: true,
