@@ -1,23 +1,48 @@
 import Job from "../models/Job.js";
 import { fetchJobs } from "../services/job.service.js";
-export const getAllJobs = async (req, res) => {
-  try {
-    const result = await fetchJobs(req.query);
+import asyncHandler from "../middleware/asyncHandler.js";
+import ApiResponse from "../utils/ApiResponse.js";
+import { fetchJSearchJobs } from "../services/provider/jsearch.provider.js";
 
-    return res.status(200).json({
-      success: true,
-      totalJobs: result.totalJobs,
-      currentPage: result.currentPage,
-      totalPages: result.totalPages,
-      data: result.jobs,
-    });
-  } catch (error) {
-    return res.status(500).json({
-      success: false,
-      message: error.message,
-    });
-  }
+export const testJSearch = async (req, res) => {
+  const jobs = await fetchJSearchJobs("software engineer");
+
+  res.status(200).json(jobs);
 };
+
+export const getExternalJobs = asyncHandler(async (req, res) => {
+  const keyword = req.query.keyword || "software engineer";
+
+  const jobs = await fetchJSearchJobs(keyword);
+
+  return res.status(200).json(
+    new ApiResponse(
+      200,
+      jobs,
+      "External jobs fetched successfully"
+    )
+  );
+});
+
+
+export const getAllJobs = asyncHandler(async (req, res) => {
+  const result = await fetchJobs(req.query);
+
+  return res.status(200).json(
+    new ApiResponse(
+      200,
+      {
+        totalJobs: result.totalJobs,
+        currentPage: result.currentPage,
+        totalPages: result.totalPages,
+        jobs: result.jobs,
+      },
+      "Jobs fetched successfully"
+    )
+  );
+});
+
+
 export const getJobById = async (req, res) => {
   try {
     const job = await Job.findById(req.params.id);

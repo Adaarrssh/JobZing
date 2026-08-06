@@ -1,79 +1,39 @@
-import Bookmark from "../models/Bookmark.js";
 
-// Add Bookmark
-export const addBookmark = async (req, res) => {
-  try {
-    const { user, job } = req.body;
+import asyncHandler from "../middleware/asyncHandler.js";
+import ApiResponse from "../utils/ApiResponse.js";
 
-    const existingBookmark = await Bookmark.findOne({ user, job });
+import {
+  getBookmarks as getBookmarksService,
+  addBookmark as addBookmarkService,
+  removeBookmark as removeBookmarkService,
+} from "../services/bookmark.service.js";
 
-    if (existingBookmark) {
-      return res.status(400).json({
-        success: false,
-        message: "Job already bookmarked",
-      });
-    }
+export const getBookmarks = asyncHandler(async (req, res) => {
+  const result = await getBookmarksService();
 
-    const bookmark = await Bookmark.create({ user, job });
+  return res
+    .status(200)
+    .json(new ApiResponse(200, result, "Bookmarks fetched successfully"));
+});
 
-    return res.status(201).json({
-      success: true,
-      message: "Bookmark added successfully",
-      data: bookmark,
-    });
-  } catch (error) {
-    return res.status(500).json({
-      success: false,
-      message: error.message,
-    });
+export const addBookmark = asyncHandler(async (req, res) => {
+  const bookmark = await addBookmarkService(req.body);
+
+  return res
+    .status(201)
+    .json(new ApiResponse(201, bookmark, "Bookmark added successfully"));
+});
+
+export const removeBookmark = asyncHandler(async (req, res) => {
+  const bookmark = await removeBookmarkService(req.params.id);
+
+  if (!bookmark) {
+    return res
+      .status(404)
+      .json(new ApiResponse(404, null, "Bookmark not found"));
   }
-};
 
-// Get User Bookmarks
-export const getBookmarks = async (req, res) => {
-  try {
-    const { userId } = req.params;
-
-    const bookmarks = await Bookmark.find({ user: userId }).populate("job");
-
-    return res.status(200).json({
-      success: true,
-      count: bookmarks.length,
-      data: bookmarks,
-    });
-  } catch (error) {
-    return res.status(500).json({
-      success: false,
-      message: error.message,
-    });
-  }
-};
-
-// Remove Bookmark
-export const removeBookmark = async (req, res) => {
-  try {
-    const { userId, jobId } = req.params;
-
-    const bookmark = await Bookmark.findOneAndDelete({
-      user: userId,
-      job: jobId,
-    });
-
-    if (!bookmark) {
-      return res.status(404).json({
-        success: false,
-        message: "Bookmark not found",
-      });
-    }
-
-    return res.status(200).json({
-      success: true,
-      message: "Bookmark removed successfully",
-    });
-  } catch (error) {
-    return res.status(500).json({
-      success: false,
-      message: error.message,
-    });
-  }
-};
+  return res
+    .status(200)
+    .json(new ApiResponse(200, null, "Bookmark removed successfully"));
+});

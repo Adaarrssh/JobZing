@@ -45,6 +45,7 @@ export const fetchJobs = async ({
     case "latest":
     default:
       query = query.sort({ createdAt: -1 });
+      break;
   }
 
   const totalJobs = await Job.countDocuments(filter);

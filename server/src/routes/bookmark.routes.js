@@ -7,8 +7,8 @@ import {
 
 const router = express.Router();
 
+router.get("/", getBookmarks);
 router.post("/", addBookmark);
-router.get("/:userId", getBookmarks);
-router.delete("/:userId/:jobId", removeBookmark);
+router.delete("/:id", removeBookmark);
 
 export default router;

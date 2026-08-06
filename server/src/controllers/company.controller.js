@@ -1,73 +1,38 @@
-import Company from "../models/Company.js";
+import asyncHandler from "../middleware/asyncHandler.js";
+import ApiResponse from "../utils/ApiResponse.js";
 
-// Get all companies
-export const getCompanies = async (req, res) => {
-  try {
-    const companies = await Company.find().sort({ createdAt: -1 });
+import {
+  getCompanies as getCompaniesService,
+  getCompanyById as getCompanyByIdService,
+  searchCompanies as searchCompaniesService,
+} from "../services/company.service.js";
 
-    return res.status(200).json({
-      success: true,
-      count: companies.length,
-      data: companies,
-    });
-  } catch (error) {
-    return res.status(500).json({
-      success: false,
-      message: error.message,
-    });
+export const getCompanies = asyncHandler(async (req, res) => {
+  const result = await getCompaniesService();
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, result, "Companies fetched successfully"));
+});
+
+export const getCompanyById = asyncHandler(async (req, res) => {
+  const company = await getCompanyByIdService(req.params.id);
+
+  if (!company) {
+    return res
+      .status(404)
+      .json(new ApiResponse(404, null, "Company not found"));
   }
-};
 
-// Get company by ID
-export const getCompanyById = async (req, res) => {
-  try {
-    const company = await Company.findById(req.params.id);
+  return res
+    .status(200)
+    .json(new ApiResponse(200, company, "Company fetched successfully"));
+});
 
-    if (!company) {
-      return res.status(404).json({
-        success: false,
-        message: "Company not found",
-      });
-    }
+export const searchCompanies = asyncHandler(async (req, res) => {
+  const result = await searchCompaniesService(req.query);
 
-    return res.status(200).json({
-      success: true,
-      data: company,
-    });
-  } catch (error) {
-    return res.status(500).json({
-      success: false,
-      message: error.message,
-    });
-  }
-};
-
-// Search companies
-export const searchCompanies = async (req, res) => {
-  try {
-    const { name, location } = req.query;
-
-    const filter = {};
-
-    if (name) {
-      filter.name = { $regex: name, $options: "i" };
-    }
-
-    if (location) {
-      filter.location = { $regex: location, $options: "i" };
-    }
-
-    const companies = await Company.find(filter);
-
-    return res.status(200).json({
-      success: true,
-      count: companies.length,
-      data: companies,
-    });
-  } catch (error) {
-    return res.status(500).json({
-      success: false,
-      message: error.message,
-    });
-  }
-};
+  return res
+    .status(200)
+    .json(new ApiResponse(200, result, "Companies fetched successfully"));
+});
