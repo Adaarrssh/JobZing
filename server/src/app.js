@@ -8,6 +8,9 @@ import authRoutes from "./routes/auth.routes.js";
 import errorHandler from "./middleware/error.middleware.js";
 import userRoutes from "./routes/user.routes.js";
 import notificationRoutes from "./routes/notification.routes.js";
+import resumeAnalysisRoutes from "./routes/resumeAnalysis.routes.js";
+import jobMatcherRoutes from "./routes/jobMatcher.routes.js";
+import searchHistoryRoutes from "./routes/searchHistory.routes.js";
 const app = express();
 app.use(helmet());
 app.use(cors());
@@ -19,6 +22,9 @@ app.use(cookieParser());
 app.use("/api/auth", authRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api/notifications", notificationRoutes);
+app.use("/api/resume-analysis", resumeAnalysisRoutes);
+app.use("/api/job-match", jobMatcherRoutes);
+app.use("/api/search-history", searchHistoryRoutes);
 app.get("/", (req, res) => {
   res.status(200).json({
     success: true,
