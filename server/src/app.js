@@ -11,6 +11,7 @@ import notificationRoutes from "./routes/notification.routes.js";
 import resumeAnalysisRoutes from "./routes/resumeAnalysis.routes.js";
 import jobMatcherRoutes from "./routes/jobMatcher.routes.js";
 import searchHistoryRoutes from "./routes/searchHistory.routes.js";
+import recommendationRoutes from "./routes/recommendation.routes.js";
 const app = express();
 app.use(helmet());
 app.use(cors());
@@ -25,6 +26,7 @@ app.use("/api/notifications", notificationRoutes);
 app.use("/api/resume-analysis", resumeAnalysisRoutes);
 app.use("/api/job-match", jobMatcherRoutes);
 app.use("/api/search-history", searchHistoryRoutes);
+app.use("/api/recommendations", recommendationRoutes);
 app.get("/", (req, res) => {
   res.status(200).json({
     success: true,

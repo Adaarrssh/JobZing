@@ -30,6 +30,7 @@ Return exactly this structure:
 }
 
 Rules:
+
 - resumeScore must be a number between 0 and 100.
 - existingSkills must contain skills clearly present in the resume.
 - missingSkills must contain important skills that are absent from the resume but relevant to the candidate's profile.
@@ -62,6 +63,7 @@ Rules:
     analysis.recommendedSkills = parsedResult.recommendedSkills ?? [];
     analysis.recommendedRoles = parsedResult.recommendedRoles ?? [];
     analysis.improvementSuggestions = parsedResult.improvementSuggestions ?? [];
+
     analysis.analysisStatus = "completed";
 
     await analysis.save();
