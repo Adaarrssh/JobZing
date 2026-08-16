@@ -2,6 +2,10 @@ import axios from "axios";
 
 export const fetchJSearchJobs = async (query) => {
   try {
+    console.log("JSEARCH URL:", process.env.JSEARCH_BASE_URL);
+    console.log("RAPIDAPI KEY EXISTS:", !!process.env.RAPIDAPI_KEY);
+    console.log("QUERY:", query);
+
     const response = await axios.get(
       `${process.env.JSEARCH_BASE_URL}/search-v2`,
       {
@@ -12,34 +16,26 @@ export const fetchJSearchJobs = async (query) => {
           date_posted: "all",
         },
         headers: {
-          "x-rapidapi-key": process.env.RAPIDAPI_KEY,
+          "x-rapidapi-key": process.env.JSEARCH_API_KEY,
           "x-rapidapi-host": "jsearch.p.rapidapi.com",
         },
-      }
+      },
     );
 
-    const data = response.data.data;
+    console.log("JSEARCH STATUS:", response.status);
+    console.log("JSEARCH RESPONSE:", JSON.stringify(response.data, null, 2));
 
-    console.log("DATA:", data);
-    console.log("TYPE:", typeof data);
-    console.log("IS ARRAY:", Array.isArray(data));
-    
-    console.log(JSON.stringify(response.data, null, 2));
-    return data;
-
-    
+    return response.data.data || [];
   } catch (error) {
-    console.log(error.response?.status);
-    console.log(error.response?.data || error.message);
-    return [];
+    console.log("JSEARCH ERROR STATUS:", error.response?.status);
+    console.log("JSEARCH ERROR DATA:", error.response?.data || error.message);
+
+    throw error;
   }
 };
 
 export const normalizeJSearchJobs = (jobs) => {
-  console.log("normalize input:", jobs);
-
   if (!Array.isArray(jobs)) {
-    console.log("Not an array!");
     return [];
   }
 

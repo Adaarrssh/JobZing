@@ -27,7 +27,17 @@ export const getRecommendedJobs = async ({ userId }) => {
     });
 
     recommendations.push({
-      job,
+      job: {
+        _id: job._id,
+        title: job.title,
+        company: job.company,
+        location: job.location,
+        salary: job.salary,
+        jobType: job.jobType,
+        experience: job.experience,
+        description: job.description,
+        skills: job.skills,
+      },
       matchScore: skillGap.matchScore,
       matchedSkills: skillGap.matchedSkills,
       missingSkills: skillGap.missingSkills,

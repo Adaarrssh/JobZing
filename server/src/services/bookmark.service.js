@@ -1,8 +1,7 @@
 import Bookmark from "../models/Bookmark.js";
 
 export const getBookmarks = async () => {
-  const bookmarks = await Bookmark.find().populate("job");
-
+  const bookmarks = await Bookmark.find();
   return {
     count: bookmarks.length,
     bookmarks,
