@@ -18,6 +18,7 @@ import Notifications from "./pages/Notifications";
 import SearchHistory from "./pages/SearchHistory";
 import NotFound from "./pages/NotFound";
 import ResetPassword from "./pages/ResetPassword";
+import Interview from "./pages/Interview";
 
 export default function App() {
   return (
@@ -43,6 +44,7 @@ export default function App() {
               <Route path="bookmarks" element={<Bookmarks />} />
               <Route path="notifications" element={<Notifications />} />
               <Route path="search-history" element={<SearchHistory />} />
+              <Route path="interview" element={<Interview />} />
             </Route>
 
             <Route path="/home" element={<Navigate to="/" replace />} />

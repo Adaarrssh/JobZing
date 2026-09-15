@@ -281,6 +281,47 @@ export default function Dashboard() {
                 }
               />
             </div>
+
+            <div className="section-heading compact interview-heading">
+              <div>
+                <span className="eyebrow">COMING NEXT</span>
+
+                <h2>AI Interview Studio</h2>
+              </div>
+            </div>
+
+            <div className="interview-coming-card">
+              <div className="interview-coming-icon">
+                <Sparkles size={26} />
+              </div>
+
+              <div className="interview-coming-content">
+                <span className="coming-badge">COMING SOON</span>
+
+                <h3>Practice smarter with AI-powered interviews</h3>
+
+                <p>
+                  Prepare for interviews with adaptive questions, voice and
+                  video interviews, resume-based practice, and personalized
+                  performance feedback.
+                </p>
+
+                <div className="interview-feature-list">
+                  <span>AI Mock Interviews</span>
+                  <span>Resume-Based Questions</span>
+                  <span>Voice & Video</span>
+                  <span>Performance Analysis</span>
+                </div>
+              </div>
+
+              <Link
+                className="btn btn-outline interview-coming-button"
+                to="/interview"
+              >
+                Explore
+                <ArrowRight size={16} />
+              </Link>
+            </div>
           </div>
 
           <aside className="side-column">

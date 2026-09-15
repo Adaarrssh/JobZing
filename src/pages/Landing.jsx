@@ -4,9 +4,11 @@ import {
   BrainCircuit,
   CheckCircle2,
   Compass,
+  Mic2,
   Search,
   Sparkles,
   Target,
+  Video,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 
@@ -216,6 +218,56 @@ export default function Landing() {
               title="Career dashboard"
               text="Keep saved jobs, profile signals, notifications and search history in one focused workspace."
             />
+          </div>
+
+          <div className="interview-preview">
+            <div className="interview-preview-main">
+              <div className="interview-icon">
+                <Sparkles size={25} />
+              </div>
+
+              <div>
+                <span className="eyebrow">COMING NEXT</span>
+
+                <h2>AI Interview Studio</h2>
+
+                <p>
+                  Prepare smarter with AI-powered mock interviews, adaptive
+                  questions and personalized feedback based on your profile.
+                </p>
+
+                <div className="interview-tags">
+                  <span>
+                    <BrainCircuit size={13} />
+                    AI Mock Interviews
+                  </span>
+
+                  <span>
+                    <Target size={13} />
+                    Resume-Based
+                  </span>
+
+                  <span>
+                    <Mic2 size={13} />
+                    Voice Interviews
+                  </span>
+
+                  <span>
+                    <Video size={13} />
+                    Video Interviews
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <div className="interview-coming">
+              <span>COMING SOON</span>
+
+              <button className="btn btn-white" type="button" disabled>
+                Explore Studio
+                <ArrowRight size={16} />
+              </button>
+            </div>
           </div>
         </div>
       </section>
