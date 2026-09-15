@@ -4,15 +4,20 @@ import ApiResponse from "../utils/ApiResponse.js";
 import { getJobMatch } from "../services/jobMatcher.service.js";
 
 export const getJobMatchController = asyncHandler(async (req, res) => {
-  const { jobSkills } = req.body;
+  const { jobSkills = [], jobTitle = "", jobDescription = "" } = req.body;
 
-  if (!jobSkills || !Array.isArray(jobSkills) || jobSkills.length === 0) {
-    throw new ApiError(400, "Job skills are required");
+  if (
+    (!Array.isArray(jobSkills) || jobSkills.length === 0) &&
+    !jobDescription.trim()
+  ) {
+    throw new ApiError(400, "Job details are required");
   }
 
   const result = await getJobMatch({
     userId: req.user._id,
     jobSkills,
+    jobTitle,
+    jobDescription,
   });
 
   return res

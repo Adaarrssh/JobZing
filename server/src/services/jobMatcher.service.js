@@ -1,7 +1,12 @@
 import ResumeAnalysis from "../models/ResumeAnalysis.model.js";
 import { analyzeSkillGap } from "./skillGap.service.js";
 
-export const getJobMatch = async ({ userId, jobSkills }) => {
+export const getJobMatch = async ({
+  userId,
+  jobSkills = [],
+  jobTitle = "",
+  jobDescription = "",
+}) => {
   const resumeAnalysis = await ResumeAnalysis.findOne({
     userId,
     analysisStatus: "completed",
@@ -12,8 +17,10 @@ export const getJobMatch = async ({ userId, jobSkills }) => {
   }
 
   const skillGap = await analyzeSkillGap({
-    resumeSkills: resumeAnalysis.existingSkills,
+    resumeSkills: resumeAnalysis.existingSkills || [],
     jobSkills,
+    jobTitle,
+    jobDescription,
   });
 
   return {
