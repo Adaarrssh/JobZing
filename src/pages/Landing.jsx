@@ -3,7 +3,6 @@ import {
   BarChart3,
   BrainCircuit,
   CheckCircle2,
-  ChevronRight,
   Compass,
   Search,
   Sparkles,
@@ -257,8 +256,6 @@ function Feature({ icon, number, title, text }) {
       <h3>{title}</h3>
 
       <p>{text}</p>
-
-      <ChevronRight className="feature-arrow" size={18} />
     </div>
   );
 }

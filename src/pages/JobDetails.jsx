@@ -7,7 +7,7 @@ import {
   Sparkles,
   Target,
 } from "lucide-react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 
 import api, { getErrorMessage, unwrap } from "../services/api";
@@ -25,7 +25,7 @@ function MatchGroup({ label, values = [] }) {
       <small>{label}</small>
 
       <div className="mini-skill-list">
-        {(values || []).slice(0, 5).map((value, index) => (
+        {(values || []).slice(0, 8).map((value, index) => (
           <span key={`${value}-${index}`}>{value}</span>
         ))}
       </div>
@@ -35,15 +35,24 @@ function MatchGroup({ label, values = [] }) {
 
 export default function JobDetails() {
   const { id } = useParams();
+  const location = useLocation();
   const navigate = useNavigate();
 
-  const [job, setJob] = useState(null);
+  const [job, setJob] = useState(
+    location.state?.job ? normalizeExternalJob(location.state.job) : null,
+  );
   const [match, setMatch] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(!location.state?.job);
   const [matching, setMatching] = useState(false);
   const [error, setError] = useState("");
 
   useEffect(() => {
+    if (location.state?.job) {
+      setJob(normalizeExternalJob(location.state.job));
+      setLoading(false);
+      return;
+    }
+
     const fetchJob = async () => {
       try {
         setLoading(true);
@@ -61,15 +70,22 @@ export default function JobDetails() {
     };
 
     fetchJob();
-  }, [id]);
+  }, [id, location.state]);
 
   const analyze = async () => {
+    if (!job) {
+      return;
+    }
+
     try {
       setMatching(true);
       setError("");
+      setMatch(null);
 
       const response = await api.post("/job-match", {
-        jobSkills: normalizeSkills(job?.skills),
+        jobTitle: job.title || "",
+        jobDescription: job.description || "",
+        jobSkills: normalizeSkills(job.skills),
       });
 
       setMatch(unwrap(response));
@@ -112,10 +128,18 @@ export default function JobDetails() {
     );
   }
 
+  const jobSkills = normalizeSkills(
+    match?.requiredSkills?.length ? match.requiredSkills : job.skills,
+  );
+
   return (
     <div className="page">
       <div className="container">
-        <button className="back-link" onClick={() => navigate(-1)}>
+        <button
+          className="back-link"
+          onClick={() => navigate(-1)}
+          type="button"
+        >
           <ArrowLeft size={17} />
           Back to jobs
         </button>
@@ -161,11 +185,15 @@ export default function JobDetails() {
             <section className="content-card">
               <h2>Required skills</h2>
 
-              <div className="skill-cloud">
-                {normalizeSkills(job.skills).map((skill, index) => (
-                  <span key={`${skill}-${index}`}>{skill}</span>
-                ))}
-              </div>
+              {jobSkills.length ? (
+                <div className="skill-cloud">
+                  {jobSkills.map((skill, index) => (
+                    <span key={`${skill}-${index}`}>{skill}</span>
+                  ))}
+                </div>
+              ) : (
+                <p className="long-copy">Skills not listed for this role.</p>
+              )}
             </section>
           </main>
 
@@ -182,9 +210,19 @@ export default function JobDetails() {
                 </span>
               </div>
 
-              {job.applyLink ? (
+              <button
+                className="btn btn-primary full"
+                onClick={analyze}
+                disabled={matching}
+                type="button"
+              >
+                <Sparkles size={16} />
+                {matching ? "Analyzing…" : "Check my job match"}
+              </button>
+
+              {job.applyLink && (
                 <a
-                  className="btn btn-primary full"
+                  className="btn btn-outline full"
                   href={job.applyLink}
                   target="_blank"
                   rel="noreferrer"
@@ -192,16 +230,6 @@ export default function JobDetails() {
                   Apply now
                   <ExternalLink size={16} />
                 </a>
-              ) : (
-                <button
-                  className="btn btn-primary full"
-                  onClick={analyze}
-                  disabled={matching}
-                >
-                  <Sparkles size={16} />
-
-                  {matching ? "Analyzing…" : "Check my job match"}
-                </button>
               )}
 
               <button className="btn btn-outline full" type="button">
@@ -214,7 +242,6 @@ export default function JobDetails() {
               <div className="match-card">
                 <div className={`score-ring ${scoreTone(match.matchScore)}`}>
                   <strong>{match.matchScore}%</strong>
-
                   <span>match</span>
                 </div>
 

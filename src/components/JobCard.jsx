@@ -88,20 +88,9 @@ export default function JobCard({
       <div className="job-card-body">
         <div className="job-topline">
           <div>
-            {source !== "internal" && job?.applyLink ? (
-              <a
-                href={job.applyLink}
-                target="_blank"
-                rel="noreferrer"
-                className="job-title"
-              >
-                {job?.title || "Untitled role"}
-              </a>
-            ) : (
-              <Link to={`/jobs/${id}`} className="job-title">
-                {job?.title || "Untitled role"}
-              </Link>
-            )}
+            <Link to={`/jobs/${id}`} state={{ job }} className="job-title">
+              {job?.title || "Untitled role"}
+            </Link>
 
             <div className="company-name">{job?.company || "Company"}</div>
           </div>
