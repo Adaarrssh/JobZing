@@ -8,24 +8,43 @@ const userSchema = new mongoose.Schema(
       required: [true, "Full name is required"],
       trim: true,
     },
+
     email: {
       type: String,
       required: [true, "Email is required"],
       unique: true,
       lowercase: true,
       trim: true,
-      match: [/^\S+@\S+\.\S+$/, "Please enter a valid email"],
+      match: [
+        /^[a-zA-Z0-9._%+-]+@gmail\.com$/,
+        "Please use a valid Gmail address",
+      ],
     },
+
     password: {
       type: String,
       required: [true, "Password is required"],
       minlength: [10, "Password must be at least 10 characters long"],
       select: false,
     },
+
     isVerified: {
       type: Boolean,
       default: false,
     },
+
+    passwordResetToken: {
+      type: String,
+      default: null,
+      select: false,
+    },
+
+    passwordResetExpires: {
+      type: Date,
+      default: null,
+      select: false,
+    },
+
     phone: {
       type: String,
       trim: true,
@@ -95,15 +114,20 @@ const userSchema = new mongoose.Schema(
     timestamps: true,
   },
 );
+
 userSchema.pre("save", async function (next) {
   if (!this.isModified("password")) {
     return next();
   }
+
   this.password = await bcrypt.hash(this.password, 10);
   next();
 });
+
 userSchema.methods.comparePassword = async function (enteredPassword) {
   return await bcrypt.compare(enteredPassword, this.password);
 };
+
 const User = mongoose.model("User", userSchema);
+
 export default User;

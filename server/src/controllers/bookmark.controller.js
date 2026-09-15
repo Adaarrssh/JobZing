@@ -1,4 +1,3 @@
-
 import asyncHandler from "../middleware/asyncHandler.js";
 import ApiResponse from "../utils/ApiResponse.js";
 
@@ -9,7 +8,7 @@ import {
 } from "../services/bookmark.service.js";
 
 export const getBookmarks = asyncHandler(async (req, res) => {
-  const result = await getBookmarksService();
+  const result = await getBookmarksService(req.user._id);
 
   return res
     .status(200)
@@ -17,7 +16,10 @@ export const getBookmarks = asyncHandler(async (req, res) => {
 });
 
 export const addBookmark = asyncHandler(async (req, res) => {
-  const bookmark = await addBookmarkService(req.body);
+  const bookmark = await addBookmarkService({
+    ...req.body,
+    user: req.user._id,
+  });
 
   return res
     .status(201)
@@ -25,7 +27,7 @@ export const addBookmark = asyncHandler(async (req, res) => {
 });
 
 export const removeBookmark = asyncHandler(async (req, res) => {
-  const bookmark = await removeBookmarkService(req.params.id);
+  const bookmark = await removeBookmarkService(req.params.id, req.user._id);
 
   if (!bookmark) {
     return res

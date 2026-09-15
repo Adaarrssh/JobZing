@@ -7,61 +7,52 @@ const resumeAnalysisSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
-
     resumeUrl: {
       type: String,
-      required: true,
       trim: true,
+      default: "",
     },
-
     resumeText: {
       type: String,
       required: true,
       trim: true,
     },
-
     resumeScore: {
       type: Number,
       min: 0,
       max: 100,
       default: 0,
     },
-
     existingSkills: [
       {
         type: String,
         trim: true,
       },
     ],
-
     missingSkills: [
       {
         type: String,
         trim: true,
       },
     ],
-
     recommendedSkills: [
       {
         type: String,
         trim: true,
       },
     ],
-
     recommendedRoles: [
       {
         type: String,
         trim: true,
       },
     ],
-
     improvementSuggestions: [
       {
         type: String,
         trim: true,
       },
     ],
-
     analysisStatus: {
       type: String,
       enum: ["pending", "processing", "completed", "failed"],
